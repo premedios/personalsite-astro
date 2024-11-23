@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  astro:
+    build:
+      context: ./astro
+      dockerfile: Dockerfile
+    container_name: astro_frontend
+    ports:
+      - 3000:3000
+    networks:
+      - app_network
+    volumes:
+      - ./astro:/usr/src/app  # Sync Astro project files for live development
+    environment:
+      - NODE_ENV=production
+
+  strapi:
+    image: strapi/strapi:latest  # Use the official Strapi Docker image
+    container_name: strapi_backend
+    ports:
+      - 1337:1337
+    networks:
+      - app_network
+    environment:
+      - DATABASE_CLIENT=postgres
+      - DATABASE_HOST=postgres_db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=strapi
+      - DATABASE_USERNAME=strapi_user
+      - DATABASE_PASSWORD=strapi_pass
+      - NODE_ENV=production
+    volumes:
+      - ./strapi-data:/srv/app  # Optional: Persistent storage for Strapi
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    ports:
+      - 5432:5432
+    networks:
+      - app_network
+    environment:
+      POSTGRES_USER: strapi_user
+      POSTGRES_PASSWORD: strapi_pass
+      POSTGRES_DB: strapi
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  strapi-data:
