@@ -1,23 +1,27 @@
-# Use Node.js as the base image
+# Use the official Node.js image
 FROM node:18
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package files for dependency installation
-COPY package*.json ./
+# Clone the Git repository
+# Replace <your-repo-url> with your repository URL
+RUN apt-get update && apt-get install -y git && \
+    git clone https://github.com/premedios/personalsite-astro.git . && \
+    rm -rf .git  # Optional: Remove the .git directory to reduce image size
 
 # Install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application
+# Copy the application files
 COPY . .
 
-# Build the Astro site for production
+# Build the project
 RUN npm run build
 
-# Expose the port Astro uses
+# Expose the port Astro runs on
 EXPOSE 3000
 
-# Default command to serve the site
-CMD ["npm", "run", "preview"]
+# Run the built project
+CMD ["npm", "run", "dev"]

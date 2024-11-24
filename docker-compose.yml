@@ -3,8 +3,8 @@ version: "3.8"
 services:
   astro:
     build:
-      context: /volume1/docker/astro
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: astro/Dockerfile
     container_name: astro_frontend
     ports:
       - 3000:3000
