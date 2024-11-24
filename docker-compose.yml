@@ -3,7 +3,7 @@ version: "3.8"
 services:
   astro:
     build:
-      context: ./astro
+      context: /volume1/docker/astro
       dockerfile: Dockerfile
     container_name: astro_frontend
     ports:
@@ -11,7 +11,7 @@ services:
     networks:
       - app_network
     volumes:
-      - ./astro:/usr/src/app  # Sync Astro project files for live development
+      - /volume1/docker/astro:/usr/src/app  # Sync Astro project files for live development
     environment:
       - NODE_ENV=production
 
